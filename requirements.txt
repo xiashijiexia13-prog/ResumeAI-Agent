@@ -1,0 +1,11 @@
+# Data processing and first baseline model
+pandas>=2.2,<3.0
+scikit-learn>=1.5,<2.0
+
+# API (used in phase 6)
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30,<1.0
+
+# Development quality tools
+pytest>=8.0,<9.0
+ruff>=0.8,<1.0

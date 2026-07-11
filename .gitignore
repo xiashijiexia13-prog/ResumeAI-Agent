@@ -1,0 +1,18 @@
+# Python virtual environments and caches
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Local data and generated model outputs
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+artifacts/*
+!artifacts/.gitkeep
+
+# Local configuration and editor files
+.env
+.vscode/
