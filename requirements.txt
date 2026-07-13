@@ -1,6 +1,7 @@
 # Data processing and first baseline model
 pandas>=2.2,<3.0
 scikit-learn>=1.5,<2.0
+huggingface-hub>=1.0,<2.0
 
 # API (used in phase 6)
 fastapi>=0.115,<1.0
