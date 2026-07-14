@@ -28,3 +28,20 @@ class HealthResponse(BaseModel):
 
     status: Literal["ok"]
     model_name: str
+
+
+class AnalysisReport(BaseModel):
+    """Human-readable explanation generated from the model prediction and supplied text."""
+
+    summary: str = Field(description="A concise Chinese summary of the overall fit.")
+    strengths: list[str] = Field(min_length=1, max_length=3)
+    gaps: list[str] = Field(min_length=1, max_length=3)
+    recommendations: list[str] = Field(min_length=1, max_length=3)
+    disclaimer: str = Field(description="Human-review and non-decision disclaimer.")
+
+
+class AnalysisResponse(BaseModel):
+    """Deterministic match result plus an LLM-generated explanation."""
+
+    match: MatchResponse
+    report: AnalysisReport

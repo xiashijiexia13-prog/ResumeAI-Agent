@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 
 from resumeai_agent.api.main import create_app
+from resumeai_agent.api.schemas import AnalysisReport
 
 
 class StubMatchingService:
@@ -12,6 +13,21 @@ class StubMatchingService:
             "probabilities": {"No Fit": 0.1, "Potential Fit": 0.2, "Good Fit": 0.7},
             "model_name": "TF-IDF + Logistic Regression",
         }
+
+
+class StubReportGenerator:
+    """Avoid network calls while verifying the API response contract."""
+
+    def generate(
+        self, resume_text: str, job_description_text: str, match: dict[str, object]
+    ) -> AnalysisReport:
+        return AnalysisReport(
+            summary="候选人与岗位具备较高匹配度。",
+            strengths=["具备 Python 经验"],
+            gaps=["未验证云部署经验"],
+            recommendations=["补充相关项目成果"],
+            disclaimer="本报告仅供人工辅助参考，不能用于自动招聘决策。",
+        )
 
 
 def test_health_returns_ready_status() -> None:
@@ -46,3 +62,19 @@ def test_match_rejects_empty_text() -> None:
         )
 
     assert response.status_code == 422
+
+
+def test_analyze_returns_model_result_and_llm_report() -> None:
+    with TestClient(create_app(StubMatchingService(), StubReportGenerator())) as client:
+        response = client.post(
+            "/api/v1/analyze",
+            json={
+                "resume_text": "Python developer with FastAPI experience",
+                "job_description_text": "Backend developer requiring Python and API skills",
+            },
+        )
+
+    body = response.json()
+    assert response.status_code == 200
+    assert body["match"]["label"] == "Good Fit"
+    assert body["report"]["strengths"] == ["具备 Python 经验"]
